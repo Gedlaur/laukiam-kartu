@@ -1,0 +1,1865 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Laukiam kartu">
+<meta name="theme-color" content="#a9dcff">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="ikona-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Laukiam kartu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grandstander:wght@600;800&family=Nunito:wght@600;800&display=swap">
+<style>
+/* =========================================================
+   ✨ KODO PASLAPTIS ✨
+   Čia gyvena padarėlių „nustatymai“. Pakeisk reikšmę ir žiūrėk!
+   ========================================================= */
+:root {
+  --spurgos-spalva: #a9d8f5;       /* Spurgos kailiuko spalva */
+  --nosytes-spalva: #9b6bd6;       /* Spurgos nosytė */
+  --dekucio-spalva: #fff0a6;       /* Spurgos dekutis */
+  --mieguistumas: 9s;              /* kas kiek laiko Spurga užmiega ir atsikelia */
+  --skrydzio-greitis: 16s;         /* kaip greitai skraido Lietuviukas */
+  --sirdeles-megztinis: #bba792;   /* Širdelės megztinuko spalva */
+  --sirdeles-sijonas: #ecbcc4;     /* Širdelės sijonėlio spalva */
+  --pasipūtimas: 8s;               /* kas kiek laiko Širdelė pasipučia */
+  --braskes-plaukai: #c8553d;      /* Braškės plaukų spalva */
+  --braskes-kelnes: #e0489c;       /* Braškės kelnių spalva */
+  --protingumas: 10s;              /* kas kiek laiko Braškei šauna gera mintis */
+}
+
+/* Pasaulio spalvos (vienas, visada šviesus pasaulis) */
+:root {
+  /* Pasaulis: dangus viršuje, kalvos ir žolė apačioje, padarėliai danguje ir ant žolės */
+  --dangus-virsus: #a9dcff;
+  --dangus-apacia: #fde7d8;
+  --saule: #ffd66b;
+  --debesis: #ffffff;
+  --kalva-tolima: #c3e8c9;
+  --kalva-vidurine: #9fdaa9;
+  --zole: #84cc8f;
+  --zole-tamsi: #6bb878;
+  --kontūras: #3b4a63;
+  --spurgos-seselis: #7fb3db;
+  --tekstas: #4a3b5c;
+  --tekstas-svelnus: #7a6c8a;
+  --akcentas: #f08a5d;
+  --akcentas-tamsus: #d9673a;
+  --kortele: #ffffff;
+  --skydelis: #fff6ee;
+  --klaida: #c6384f;
+  --lenta: #eebc80;
+  --lenta-tamsi: #b9834a;
+  --lenta-tekstas: #5c3a17;
+
+  --sriftas-didelis: "Grandstander", "Chalkboard SE", "Comic Sans MS", system-ui, sans-serif;
+  --sriftas: "Nunito", system-ui, -apple-system, sans-serif;
+  color-scheme: light;
+}
+
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--dangus-apacia);
+  color: var(--tekstas);
+  font-family: var(--sriftas);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pasaulis {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--dangus-virsus) 0%, #cfeaff 45%, var(--dangus-apacia) 70%);
+}
+
+/* ---------- Pavadinimas ---------- */
+.pavadinimas {
+  position: absolute;
+  top: 17%;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: center;
+  z-index: 5;
+  pointer-events: none;
+}
+.pavadinimas h1 {
+  margin: 0;
+  padding: 16px 30px 20px;
+  font-family: var(--sriftas-didelis);
+  font-weight: 800;
+  font-size: clamp(50px, 15vw, 80px);
+  line-height: 0.95;
+  text-align: center;
+  color: var(--tekstas);
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 36px;
+  box-shadow: 0 8px 24px rgba(74, 59, 92, 0.14);
+  transform: rotate(-3deg);
+}
+.pavadinimas h1 span { display: block; }
+.pavadinimas h1 span + span { color: #f08a5d; transform: translateX(14px); }
+
+/* ---------- Saulė ---------- */
+.saule {
+  position: absolute;
+  top: 9%;
+  right: -28px;
+  width: 150px;
+  height: 150px;
+}
+.saule .spinduliai {
+  transform-origin: 75px 75px;
+  animation: suktis 40s linear infinite;
+}
+@keyframes suktis { to { transform: rotate(360deg); } }
+
+/* ---------- Debesys ---------- */
+.debesis {
+  position: absolute;
+  left: 0;
+  width: 130px;
+  animation: plaukti linear infinite;
+  filter: drop-shadow(0 6px 8px rgba(120, 160, 200, 0.18));
+}
+.debesis.d1 { top: 15%; width: 140px; animation-duration: 70s; animation-delay: -20s; }
+.debesis.d2 { top: 27%; width: 100px; animation-duration: 95s; animation-delay: -70s; opacity: .9; }
+.debesis.d3 { top: 38%; width: 80px;  animation-duration: 120s; animation-delay: -35s; opacity: .8; }
+@keyframes plaukti {
+  from { transform: translateX(-160px); }
+  to   { transform: translateX(calc(100vw + 20px)); }
+}
+
+/* ---------- Žemė ---------- */
+.zeme {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 52%;
+}
+.zeme svg { display: block; width: 100%; height: 100%; }
+
+.gele {
+  position: absolute;
+  width: 26px;
+  transform-origin: 50% 100%;
+  animation: siubuoti 3.5s ease-in-out infinite;
+}
+@keyframes siubuoti {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+
+/* ---------- Lietuviukas (skraidūnas) ---------- */
+.lietuviukas-skrydis {
+  position: absolute;
+  top: 3%;
+  left: 4%;
+  width: min(40vw, 170px);
+  z-index: 6;
+  animation: skristi var(--skrydzio-greitis) ease-in-out infinite;
+}
+@keyframes skristi {
+  0%   { transform: translateX(0) scaleX(1); }
+  47%  { transform: translateX(min(42vw, 240px)) scaleX(1); }
+  50%  { transform: translateX(min(42vw, 240px)) scaleX(-1); }
+  97%  { transform: translateX(0) scaleX(-1); }
+  100% { transform: translateX(0) scaleX(1); }
+}
+.lietuviukas {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  animation: supuotis 1.6s ease-in-out infinite;
+}
+@keyframes supuotis {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(10px) rotate(2deg); }
+}
+.l-sparnas {
+  transform-box: view-box;
+  transform-origin: 150px 72px;
+  animation: plasnoti 0.45s ease-in-out infinite alternate;
+}
+@keyframes plasnoti {
+  from { transform: rotate(4deg); }
+  to   { transform: rotate(-14deg); }
+}
+.l-uodega {
+  transform-box: view-box;
+  transform-origin: 68px 88px;
+  animation: uodega 1.6s ease-in-out infinite;
+}
+@keyframes uodega {
+  0%, 100% { transform: rotate(-4deg); }
+  50%      { transform: rotate(5deg); }
+}
+.l-snapas-apacia {
+  transform-box: view-box;
+  transform-origin: 222px 66px;
+  animation: dainuoti 2.4s ease-in-out infinite;
+}
+@keyframes dainuoti {
+  0%, 55%, 100% { transform: rotate(0deg); }
+  62%, 76%      { transform: rotate(14deg); }
+  69%, 83%      { transform: rotate(2deg); }
+}
+.l-akis {
+  transform-box: fill-box;
+  transform-origin: 50% 60%;
+  animation: mirksti 3.6s ease-in-out infinite;
+  animation-delay: -1.2s;
+}
+@keyframes mirksti {
+  0%, 90%, 100% { transform: scaleY(1); }
+  93%           { transform: scaleY(0.08); }
+  96%           { transform: scaleY(1); }
+}
+
+/* ---------- Spurga (juokingas mieguistas šuniukas) ---------- */
+.spurgos-vieta {
+  position: absolute;
+  left: 50%;
+  bottom: 9%;
+  width: min(86vw, 360px);
+  transform: translateX(-50%);
+  z-index: 3;
+}
+.spurga { display: block; width: 100%; height: auto; overflow: visible; }
+
+.s-kunas {
+  transform-box: view-box;
+  transform-origin: 160px 170px;
+  animation: kvepuoti 4.5s ease-in-out infinite;
+}
+@keyframes kvepuoti {
+  0%, 100% { transform: scale(1, 1); }
+  50%      { transform: scale(1.02, 0.975); }
+}
+.s-akis {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: snausti var(--mieguistumas) ease-in-out infinite;
+}
+@keyframes snausti {
+  0%, 28%   { transform: scaleY(1); }
+  38%, 60%  { transform: scaleY(0.1); }    /* užmiega... */
+  63%       { transform: scaleY(1.25); }   /* ups, pabudo! */
+  68%, 86%  { transform: scaleY(1); }
+  89%       { transform: scaleY(0.1); }
+  92%, 100% { transform: scaleY(1); }
+}
+/* Galva: nusvyra ant letenėlių (užmiega), tada staigiai pakyla (atsikelia!) */
+.s-galva {
+  transform-box: view-box;
+  transform-origin: 112px 108px;
+  animation: galva var(--mieguistumas) ease-in-out infinite;
+}
+@keyframes galva {
+  0%, 28%   { transform: translateY(0) rotate(0deg); }
+  40%, 60%  { transform: translateY(16px) rotate(-14deg); }   /* miega */
+  63%       { transform: translateY(-10px) rotate(5deg); }    /* ups! atsikėlė */
+  67%       { transform: translateY(0) rotate(-2deg); }
+  70%, 100% { transform: translateY(0) rotate(0deg); }
+}
+.s-antakis {
+  animation: antakis var(--mieguistumas) ease-in-out infinite;
+}
+@keyframes antakis {
+  0%, 68%, 100% { transform: translateY(0); }
+  72%, 80%      { transform: translateY(-4px); }   /* „Hm? Aš nemiegojau!“ */
+  76%           { transform: translateY(0); }
+}
+.s-ausis-desine {
+  transform-box: view-box;
+  transform-origin: 132px 42px;
+  animation: ausis 5s ease-in-out infinite;
+}
+@keyframes ausis {
+  0%, 70%, 100% { transform: rotate(0deg); }
+  74%, 82%      { transform: rotate(10deg); }
+  78%           { transform: rotate(-3deg); }
+}
+.zzz {
+  font-family: var(--sriftas-didelis);
+  font-weight: 800;
+  fill: #8a7fd0;
+  opacity: 0;
+  animation: zzz var(--mieguistumas) ease-out infinite;
+}
+.zzz.z2 { animation-delay: .5s; }
+.zzz.z3 { animation-delay: 1s; }
+@keyframes zzz {
+  0%, 36%  { opacity: 0; transform: translate(0, 0); }
+  42%      { opacity: 1; }
+  64%      { opacity: 0; transform: translate(14px, -26px); }
+  100%     { opacity: 0; transform: translate(14px, -26px); }
+}
+
+.p-megztinis-fonas { fill: var(--sirdeles-megztinis); }
+.p-sijono-spalva { fill: var(--sirdeles-sijonas); }
+
+/* ---------- Širdelė (miela, gera, maloni, bet truputį pasipūtusi pelytė) ---------- */
+.sirdeles-vieta {
+  position: absolute;
+  right: 1%;
+  bottom: 31%;
+  width: min(29vw, 124px);
+  z-index: 2;
+}
+.sirdele { display: block; width: 100%; height: auto; overflow: visible; }
+.p-visa {
+  transform-box: view-box;
+  transform-origin: 60px 218px;
+  animation: p-kvepuoti 3.2s ease-in-out infinite;
+}
+@keyframes p-kvepuoti {
+  0%, 100% { transform: scaleY(1); }
+  50%      { transform: scaleY(1.015); }
+}
+.p-sijonas {
+  transform-box: view-box;
+  transform-origin: 60px 132px;
+  animation: p-sijonas 2.6s ease-in-out infinite;
+}
+@keyframes p-sijonas {
+  0%, 100% { transform: rotate(-2.5deg); }
+  50%      { transform: rotate(2.5deg); }
+}
+/* Pasipūtimas: nosytė į viršų, akys užsimerkia – „Hmf!“ */
+.p-galva {
+  transform-box: view-box;
+  transform-origin: 60px 76px;
+  animation: p-galva var(--pasipūtimas) ease-in-out infinite;
+}
+@keyframes p-galva {
+  0%, 48%, 84%, 100% { transform: rotate(0deg) translateY(0); }
+  55%, 76%           { transform: rotate(-11deg) translateY(-3px); }
+}
+.p-akis {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: p-akys var(--pasipūtimas) ease-in-out infinite;
+}
+@keyframes p-akys {
+  0%, 18%, 24%, 50%, 82%, 100% { transform: scaleY(1); }
+  21%                          { transform: scaleY(0.1); }
+  56%, 76%                     { transform: scaleY(0.15); }
+}
+.p-usai {
+  transform-box: fill-box;
+  transform-origin: 100% 50%;
+  animation: p-usai 2.2s ease-in-out infinite;
+}
+.p-usai.desine { transform-origin: 0% 50%; animation-delay: -1.1s; }
+@keyframes p-usai {
+  0%, 70%, 100% { transform: rotate(0deg); }
+  76%           { transform: rotate(-7deg); }
+  82%           { transform: rotate(5deg); }
+}
+.p-sirdute {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: p-sirdute var(--pasipūtimas) ease-out infinite;
+}
+@keyframes p-sirdute {
+  0%, 54%  { opacity: 0; transform: translate(0, 0) scale(.6); }
+  60%      { opacity: 1; transform: translate(0, -6px) scale(1); }
+  80%      { opacity: 0; transform: translate(6px, -26px) scale(1.1); }
+  100%     { opacity: 0; }
+}
+
+/* ---------- Braškė (juokinga, protinga, išmintinga lėlė ant lazdelės) ---------- */
+.braskes-vieta {
+  position: absolute;
+  left: 6%;
+  bottom: 32%;
+  width: min(31vw, 124px);
+  z-index: 2;
+}
+.braske { display: block; width: 100%; height: auto; overflow: visible; }
+.b-plaukai { fill: var(--braskes-plaukai); }
+.b-kelnes { fill: var(--braskes-kelnes); }
+.b-visa {
+  transform-box: view-box;
+  transform-origin: 50px 230px;
+  animation: b-siubuoti 3.4s ease-in-out infinite;
+}
+@keyframes b-siubuoti {
+  0%, 100% { transform: rotate(-2.5deg); }
+  50%      { transform: rotate(2.5deg); }
+}
+/* Pirma „Hmm...“ (galva pakrypsta), tada „Aha!“ (užsidega lemputė) */
+.b-galva {
+  transform-box: view-box;
+  transform-origin: 50px 82px;
+  animation: b-galva var(--protingumas) ease-in-out infinite;
+}
+@keyframes b-galva {
+  0%, 36%, 100% { transform: rotate(0deg); }
+  42%, 54%      { transform: rotate(8deg); }
+  58%           { transform: rotate(-3deg) translateY(-2px); }
+  62%, 80%      { transform: rotate(0deg); }
+}
+.b-antakiai {
+  animation: b-antakiai var(--protingumas) ease-in-out infinite;
+}
+@keyframes b-antakiai {
+  0%, 56%, 84%, 100% { transform: translateY(0); }
+  60%, 80%           { transform: translateY(-2.5px); }
+}
+.b-akis {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: mirksti 4.2s ease-in-out infinite;
+  animation-delay: -2s;
+}
+.b-sypsena-maza { animation: b-maza var(--protingumas) step-end infinite; }
+.b-sypsena-didele { opacity: 0; animation: b-didele var(--protingumas) step-end infinite; }
+@keyframes b-maza   { 0% { opacity: 1; } 58% { opacity: 0; } 82% { opacity: 1; } }
+@keyframes b-didele { 0% { opacity: 0; } 58% { opacity: 1; } 82% { opacity: 0; } }
+.b-lempute {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: b-lempute var(--protingumas) ease-out infinite;
+}
+@keyframes b-lempute {
+  0%, 56%  { opacity: 0; transform: scale(.4); }
+  60%      { opacity: 1; transform: scale(1.15); }
+  64%, 78% { opacity: 1; transform: scale(1); }
+  84%,100% { opacity: 0; transform: scale(.9); }
+}
+
+/* =========================================================
+   3 ETAPAS: paspaudus padarėlis pašoka ir prabyla
+   ========================================================= */
+[data-padarelis] {
+  cursor: pointer;
+  touch-action: manipulation;
+  outline: none;
+}
+[data-padarelis]:focus-visible .sokikas {
+  filter: drop-shadow(0 0 6px #ffffff) drop-shadow(0 0 3px var(--tekstas));
+}
+.sokikas { display: block; transform-origin: 50% 100%; }
+g.sokikas { transform-box: fill-box; transform-origin: 50% 100%; }
+
+/* Pašokimas: susiploja, šokteli aukštyn, nusileidžia */
+.sokikas.soka { animation: pasokti .7s cubic-bezier(.3,.7,.4,1); }
+@keyframes pasokti {
+  0%   { transform: translateY(0) scale(1, 1); }
+  14%  { transform: translateY(0) scale(1.08, .9); }
+  42%  { transform: translateY(-24%) scale(.95, 1.07); }
+  68%  { transform: translateY(0) scale(1.07, .93); }
+  84%  { transform: translateY(-4%) scale(.99, 1.01); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+/* Lietuviukas daro kūlversčią ore! */
+.sokikas.salto { transform-origin: 50% 50%; }
+.sokikas.salto.soka { animation: salto .8s cubic-bezier(.4,.1,.3,1); }
+@keyframes salto {
+  0%   { transform: translateY(0) rotate(0deg); }
+  50%  { transform: translateY(-30%) rotate(-180deg); }
+  100% { transform: translateY(0) rotate(-360deg); }
+}
+
+/* Kalbėjimo debesėliai */
+.debeseliai {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+.burbulas {
+  --uodega: 50%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: min(62vw, 230px);
+  padding: 10px 16px 12px;
+  font-family: var(--sriftas-didelis);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.2;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--tekstas);
+  background: #ffffff;
+  border: 3px solid var(--tekstas);
+  border-radius: 22px;
+  box-shadow: 0 6px 0 rgba(74, 59, 92, 0.18);
+  transform-origin: var(--uodega) 100%;
+}
+.burbulas::after {
+  content: "";
+  position: absolute;
+  left: var(--uodega);
+  bottom: -10px;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  background: #ffffff;
+  border-right: 3px solid var(--tekstas);
+  border-bottom: 3px solid var(--tekstas);
+  transform: rotate(45deg);
+}
+.burbulas.apacioje { transform-origin: var(--uodega) 0%; }
+.burbulas.apacioje::after {
+  bottom: auto;
+  top: -10px;
+  border: 0;
+  border-left: 3px solid var(--tekstas);
+  border-top: 3px solid var(--tekstas);
+}
+.burbulas.rodomas { animation: issokti .35s cubic-bezier(.3,1.6,.5,1); }
+@keyframes issokti {
+  from { transform: scale(.2); opacity: 0; }
+  to   { transform: scale(1);  opacity: 1; }
+}
+
+/* Patarimas apačioje */
+.patarimas {
+  position: absolute;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  z-index: 9;
+  margin: 0;
+  padding: 8px 16px 9px;
+  font-family: var(--sriftas-didelis);
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--tekstas);
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(74, 59, 92, 0.15);
+  pointer-events: none;
+  transform: translateX(-50%);
+  animation: linguoti 1.6s ease-in-out infinite;
+  transition: opacity .5s;
+}
+.patarimas.dingsta { opacity: 0; }
+@keyframes linguoti {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* =========================================================
+   4 ETAPAS: laukimo priskyrimas
+   ========================================================= */
+.laukimu-mygtukas {
+  position: absolute;
+  right: 16px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  z-index: 11;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font-size: 30px;
+  line-height: 1;
+  background: var(--kortele);
+  border: 3px solid var(--tekstas);
+  border-radius: 50%;
+  box-shadow: 0 5px 0 rgba(74, 59, 92, 0.25);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.laukimu-mygtukas:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(74, 59, 92, 0.25); }
+.laukimu-mygtukas:focus-visible { outline: 3px solid var(--akcentas); outline-offset: 3px; }
+
+/* Ženkliukas po padarėliu: ko jis laukia */
+.zenkliukai { position: absolute; inset: 0; z-index: 8; pointer-events: none; }
+.zenkliukas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: 150px;
+  padding: 4px 10px 5px;
+  font-family: var(--sriftas);
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--tekstas);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid var(--tekstas);
+  border-radius: 999px;
+}
+
+/* Skydelis „Ko laukiam?“ */
+.skydelis {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--skydelis);
+  padding: calc(env(safe-area-inset-top, 0px) + 12px) 16px calc(env(safe-area-inset-bottom, 0px) + 24px);
+  animation: iskilti .35s cubic-bezier(.2,.9,.3,1);
+}
+@keyframes iskilti {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.skydelio-vidus {
+  max-width: 460px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.skydelio-galva {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.skydelio-galva h2 {
+  margin: 0;
+  font-family: var(--sriftas-didelis);
+  font-weight: 800;
+  font-size: 34px;
+  color: var(--tekstas);
+}
+.uzdaryti {
+  width: 48px;
+  height: 48px;
+  flex: none;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--tekstas);
+  background: var(--kortele);
+  border: 3px solid var(--tekstas);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.zingsnis { display: flex; flex-direction: column; gap: 10px; }
+.zingsnis h3 {
+  margin: 0;
+  font-family: var(--sriftas-didelis);
+  font-weight: 600;
+  font-size: 21px;
+  color: var(--tekstas);
+}
+.zingsnis h3 b {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-right: 6px;
+  font-size: 17px;
+  color: #fff;
+  background: var(--akcentas);
+  border-radius: 50%;
+}
+
+.padareliu-tinklelis {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.padarelio-kortele {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px 8px 12px;
+  font-family: var(--sriftas);
+  color: var(--tekstas);
+  background: var(--kortele);
+  border: 3px solid transparent;
+  border-radius: 20px;
+  box-shadow: 0 3px 10px rgba(74, 59, 92, 0.1);
+  cursor: pointer;
+  transition: transform .15s, border-color .15s;
+}
+.padarelio-kortele .portretas { display: block; width: 100%; height: 92px; }
+.padarelio-kortele .portretas svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.padarelio-kortele .vardas { font-family: var(--sriftas-didelis); font-weight: 800; font-size: 18px; }
+.padarelio-kortele .busena {
+  max-width: 100%;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tekstas-svelnus);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.padarelio-kortele[aria-pressed="true"] {
+  border-color: var(--akcentas);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(240, 138, 93, 0.3);
+}
+
+.tipai {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.tipas {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 8px 12px;
+  font-family: var(--sriftas);
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--tekstas);
+  background: var(--kortele);
+  border: 3px solid transparent;
+  border-radius: 16px;
+  box-shadow: 0 3px 10px rgba(74, 59, 92, 0.1);
+  cursor: pointer;
+}
+.tipas span { font-size: 24px; }
+.tipas[aria-pressed="true"] { border-color: var(--akcentas); background: #fff1e8; }
+
+.laukas {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 52px;
+  padding: 10px 14px;
+  font-family: var(--sriftas);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--tekstas);
+  background: var(--kortele);
+  border: 3px solid #e3d6cc;
+  border-radius: 16px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.laukas:focus { outline: none; border-color: var(--akcentas); }
+.laukas::placeholder { color: #b3a7a0; }
+
+.klaida {
+  margin: 0;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--klaida);
+}
+.veiksmai { display: flex; flex-direction: column; gap: 10px; }
+.issaugoti {
+  min-height: 58px;
+  font-family: var(--sriftas-didelis);
+  font-weight: 800;
+  font-size: 22px;
+  color: #fff;
+  background: var(--akcentas);
+  border: 0;
+  border-radius: 18px;
+  box-shadow: 0 5px 0 var(--akcentas-tamsus);
+  cursor: pointer;
+}
+.issaugoti:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--akcentas-tamsus); }
+.atlaisvinti {
+  min-height: 48px;
+  font-family: var(--sriftas);
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--tekstas-svelnus);
+  background: transparent;
+  border: 2px dashed #d8c9bd;
+  border-radius: 16px;
+  cursor: pointer;
+}
+.atlaisvinti.tikrai { color: #fff; background: var(--klaida); border-color: var(--klaida); }
+
+/* =========================================================
+   5 ETAPAS: dienų skaičiavimas ir kiemas
+   ========================================================= */
+.laukimu-mygtukas.kaireje { right: auto; left: 16px; }
+
+/* Debesėlis, kai padarėlis skaičiuoja dienas */
+.skaiciavimas { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.skaiciavimas .s-pav { font-family: var(--sriftas); font-weight: 800; font-size: 14px; color: var(--tekstas-svelnus); }
+.skaiciavimas .s-sk { font-family: var(--sriftas-didelis); font-weight: 800; font-size: 46px; line-height: 1; color: var(--akcentas); font-variant-numeric: tabular-nums; }
+.skaiciavimas .s-zodis { font-size: 18px; }
+
+/* Kiemas */
+.kiemas { background: linear-gradient(180deg, #dff1ff 0%, #eef8e8 28%, #d3efd0 100%); }
+.tvora { display: block; width: 100%; height: 58px; margin-bottom: -14px; }
+.kiemo-sarasas { display: flex; flex-direction: column; gap: 14px; }
+.kiemo-kortele {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px 10px 8px;
+  text-align: left;
+  font-family: var(--sriftas);
+  color: var(--tekstas);
+  background: var(--kortele);
+  border: 0;
+  border-radius: 22px;
+  box-shadow: 0 4px 12px rgba(61, 107, 69, 0.14);
+  cursor: pointer;
+}
+.kiemo-kortele .portretas { width: 80px; height: 76px; }
+.kiemo-kortele .portretas svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.kiemo-tekstas { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kiemo-tekstas .vardas { font-family: var(--sriftas-didelis); font-weight: 800; font-size: 19px; }
+.kiemo-tekstas .ivykis { font-weight: 800; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kiemo-tekstas .kada { font-weight: 700; font-size: 13px; color: var(--tekstas-svelnus); }
+.kiemo-lenta {
+  min-width: 74px;
+  padding: 6px 8px 7px;
+  text-align: center;
+  color: var(--lenta-tekstas);
+  background: var(--lenta);
+  border: 3px solid var(--lenta-tamsi);
+  border-radius: 14px;
+  box-shadow: 0 4px 0 var(--lenta-tamsi);
+  transform: rotate(2deg);
+}
+.kiemo-lenta .sk { display: block; font-family: var(--sriftas-didelis); font-weight: 800; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+.kiemo-lenta .zodis { display: block; font-weight: 800; font-size: 13px; }
+.kiemo-kortele:nth-child(even) .kiemo-lenta { transform: rotate(-2deg); }
+
+.tuscias-kiemas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 24px 16px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 22px;
+}
+.tuscias-kiemas p { margin: 0; font-family: var(--sriftas-didelis); font-weight: 600; font-size: 20px; color: var(--tekstas); }
+.tuscias-kiemas .issaugoti { padding: 0 22px; }
+
+.laisvi { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.laisvas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  padding: 6px 4px 8px;
+  font-family: var(--sriftas);
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--tekstas);
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px dashed #a9cfae;
+  border-radius: 16px;
+  cursor: pointer;
+}
+.laisvas .portretas { width: 100%; height: 54px; }
+.laisvas .portretas svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.laisvas .prideti { font-size: 12px; color: var(--akcentas-tamsus); }
+
+@media (prefers-reduced-motion: reduce) {
+  .skydelis { animation: none; }
+  .sokikas.soka, .burbulas.rodomas, .patarimas { animation: none; }
+  .b-visa, .b-galva, .b-antakiai, .b-lempute, .b-sypsena-maza, .b-sypsena-didele { animation: none; }
+  .p-visa, .p-sijonas, .p-galva, .p-usai, .p-sirdute { animation: none; }
+  .lietuviukas-skrydis, .lietuviukas, .l-sparnas, .l-uodega, .l-snapas-apacia,
+  .debesis, .saule .spinduliai, .gele, .s-kunas, .s-galva, .s-antakis, .s-ausis-desine, .zzz { animation: none; }
+  .debesis.d1 { transform: translateX(12vw); }
+  .debesis.d2 { transform: translateX(58vw); }
+  .debesis.d3 { transform: translateX(30vw); }
+}
+</style>
+</head>
+<body>
+
+
+<main class="pasaulis" aria-label="Padarėlių pasaulis">
+
+  <div class="pavadinimas"><h1><span>Laukiam</span><span>kartu</span></h1></div>
+
+  <!-- Saulė -->
+  <svg class="saule" viewBox="0 0 150 150" aria-hidden="true">
+    <circle style="fill:var(--saule)" cx="75" cy="75" r="62" opacity="0.25"/>
+    <g style="stroke:var(--saule)" class="spinduliai" stroke-width="7" stroke-linecap="round">
+      <line x1="75" y1="6" x2="75" y2="20"/>
+      <line x1="75" y1="130" x2="75" y2="144"/>
+      <line x1="6" y1="75" x2="20" y2="75"/>
+      <line x1="130" y1="75" x2="144" y2="75"/>
+      <line x1="26" y1="26" x2="36" y2="36"/>
+      <line x1="114" y1="114" x2="124" y2="124"/>
+      <line x1="26" y1="124" x2="36" y2="114"/>
+      <line x1="114" y1="36" x2="124" y2="26"/>
+    </g>
+    <circle style="fill:var(--saule)" cx="75" cy="75" r="38"/>
+    <circle cx="64" cy="64" r="10" fill="#fff" opacity="0.45"/>
+  </svg>
+
+  <!-- Debesys -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="debesis" viewBox="0 0 140 70">
+      <path style="fill:var(--debesis)" d="M22 62 C6 62 4 42 20 39 C18 22 40 16 50 27 C56 8 86 6 92 26 C104 16 124 24 120 40 C136 42 136 62 120 62 Z"/>
+    </symbol>
+  </svg>
+  <svg class="debesis d1" viewBox="0 0 140 70" aria-hidden="true"><use href="#debesis"/></svg>
+  <svg class="debesis d2" viewBox="0 0 140 70" aria-hidden="true"><use href="#debesis"/></svg>
+  <svg class="debesis d3" viewBox="0 0 140 70" aria-hidden="true"><use href="#debesis"/></svg>
+
+  <!-- Lietuviukas: draugiškas skraidūnas (pagal dukros karpinį) -->
+  <div class="lietuviukas-skrydis" data-padarelis="lietuviukas" role="button" tabindex="0" aria-label="Paukštelis Lietuviukas">
+   <div class="sokikas salto">
+    <svg class="lietuviukas" viewBox="0 0 250 185" aria-hidden="true">
+      <defs>
+        <filter id="popierius" x="-10%" y="-10%" width="130%" height="140%">
+          <feDropShadow dx="1.5" dy="2.5" stdDeviation="0.8" flood-color="#5a4a2a" flood-opacity="0.22"/>
+        </filter>
+      </defs>
+
+      <!-- kojytės -->
+      <g stroke="#e8463f" stroke-width="4" stroke-linecap="round" fill="none" filter="url(#popierius)">
+        <path d="M120 140 L98 154"/>
+        <path d="M98 154 L84 148 M98 154 L84 158 M98 154 L91 166"/>
+        <path d="M136 146 L114 170"/>
+        <path d="M114 170 L100 164 M114 170 L101 174 M114 170 L109 182"/>
+      </g>
+
+      <!-- uodega su karpytomis plunksnomis -->
+      <g class="l-uodega" filter="url(#popierius)">
+        <path d="M70 80 L12 58 L8 116 L72 100 Z" fill="#8fd3a0"/>
+        <g stroke="#c9eed2" stroke-width="1.6" stroke-linecap="round">
+          <path d="M11 66 L36 72"/><path d="M10 75 L38 79"/><path d="M10 84 L40 86"/>
+          <path d="M9 93 L40 93"/><path d="M9 102 L38 99"/><path d="M9 110 L34 105"/>
+        </g>
+      </g>
+
+      <!-- pilvuko juostelės: raudona ir žalia -->
+      <path d="M70 92 Q80 156 135 156 Q184 152 186 100 Z" fill="#ef4f4f" filter="url(#popierius)"/>
+      <path d="M70 86 Q82 138 135 138 Q178 134 182 94 Z" fill="#8fd3a0" filter="url(#popierius)"/>
+
+      <!-- geltonas sparnas su karpytomis plunksnomis -->
+      <g class="l-sparnas" filter="url(#popierius)">
+        <path d="M72 48 L152 58 Q184 70 180 90 Q170 116 130 116 Q88 113 72 48 Z" fill="#ffe14d"/>
+        <g stroke="#fff6b8" stroke-width="1.5" stroke-linecap="round">
+          <path d="M78 52 L92 74"/><path d="M86 53 L98 70"/><path d="M94 54 L104 68"/>
+          <path d="M102 55 L110 66"/><path d="M110 56 L116 65"/><path d="M118 57 L122 64"/>
+        </g>
+      </g>
+
+      <!-- snapelis (jis dainuoja!) -->
+      <path d="M220 50 L246 38 L226 60 Z" fill="#ef4f4f" filter="url(#popierius)"/>
+      <path class="l-snapas-apacia" d="M222 64 L246 74 L221 71 Z" fill="#ef4f4f" filter="url(#popierius)"/>
+
+      <!-- galva -->
+      <path d="M190 26 L208 30 L220 42 L226 60 L223 78 L212 92 L194 98 L176 95 L162 84 L156 66 L160 48 L172 33 Z"
+            fill="#ffe14d" filter="url(#popierius)"/>
+
+      <!-- akytė su blakstienomis (nupiešta rašikliu) -->
+      <g class="l-akis" stroke="#2e2a26" stroke-linecap="round" fill="none">
+        <ellipse cx="198" cy="52" rx="8.5" ry="7" stroke-width="2"/>
+        <circle cx="202" cy="53" r="3.6" fill="#2e2a26" stroke="none"/>
+        <path d="M191 45 L187 40" stroke-width="1.8"/>
+        <path d="M197 44 L196 38" stroke-width="1.8"/>
+        <path d="M203 45 L206 40" stroke-width="1.8"/>
+      </g>
+    </svg>
+   </div>
+  </div>
+
+  <!-- Žemė: kalvos ir žolė -->
+  <div class="zeme" aria-hidden="true">
+    <svg viewBox="0 0 400 300" preserveAspectRatio="none">
+      <path style="fill:var(--kalva-tolima)" d="M0 70 C70 20 140 30 200 60 C260 90 330 30 400 50 L400 300 L0 300 Z"/>
+      <path style="fill:var(--kalva-vidurine)" d="M0 120 C80 80 150 95 230 115 C300 132 350 95 400 100 L400 300 L0 300 Z"/>
+      <path style="fill:var(--zole)" d="M0 165 C90 140 180 150 260 158 C320 164 360 150 400 152 L400 300 L0 300 Z"/>
+      <path style="fill:var(--zole-tamsi)" d="M0 240 C120 225 280 232 400 228 L400 300 L0 300 Z" opacity="0.35"/>
+    </svg>
+  </div>
+
+  <!-- Gėlytės -->
+  <svg class="gele" style="left:9%;bottom:30%;animation-delay:-1s" viewBox="0 0 26 40" aria-hidden="true">
+    <path d="M13 40 V18" stroke="#5aa865" stroke-width="3" stroke-linecap="round"/>
+    <g fill="#ffb3c7"><circle cx="13" cy="7" r="6"/><circle cx="6" cy="13" r="6"/><circle cx="20" cy="13" r="6"/><circle cx="13" cy="19" r="6"/></g>
+    <circle cx="13" cy="13" r="4.5" fill="#ffd66b"/>
+  </svg>
+  <svg class="gele" style="right:12%;bottom:32%;animation-delay:-2.2s" viewBox="0 0 26 40" aria-hidden="true">
+    <path d="M13 40 V18" stroke="#5aa865" stroke-width="3" stroke-linecap="round"/>
+    <g fill="#ffffff"><circle cx="13" cy="7" r="6"/><circle cx="6" cy="13" r="6"/><circle cx="20" cy="13" r="6"/><circle cx="13" cy="19" r="6"/></g>
+    <circle cx="13" cy="13" r="4.5" fill="#ffd66b"/>
+  </svg>
+  <svg class="gele" style="left:24%;bottom:3%;width:30px;animation-delay:-0.6s" viewBox="0 0 26 40" aria-hidden="true">
+    <path d="M13 40 V18" stroke="#5aa865" stroke-width="3" stroke-linecap="round"/>
+    <g fill="#b9a5ff"><circle cx="13" cy="7" r="6"/><circle cx="6" cy="13" r="6"/><circle cx="20" cy="13" r="6"/><circle cx="13" cy="19" r="6"/></g>
+    <circle cx="13" cy="13" r="4.5" fill="#fff3b0"/>
+  </svg>
+  <svg class="gele" style="left:8%;bottom:4%;width:22px;animation-delay:-1.7s" viewBox="0 0 26 40" aria-hidden="true">
+    <path d="M13 40 V18" stroke="#5aa865" stroke-width="3" stroke-linecap="round"/>
+    <g fill="#ffd0a8"><circle cx="13" cy="7" r="6"/><circle cx="6" cy="13" r="6"/><circle cx="20" cy="13" r="6"/><circle cx="13" cy="19" r="6"/></g>
+    <circle cx="13" cy="13" r="4.5" fill="#ff9fb8"/>
+  </svg>
+
+  <!-- Gėlytės prie Širdelės -->
+  <svg class="gele" style="right:1%;bottom:31%;width:22px;animation-delay:-0.9s" viewBox="0 0 26 40" aria-hidden="true">
+    <path d="M13 40 V18" stroke="#5aa865" stroke-width="3" stroke-linecap="round"/>
+    <g fill="#ff8fb0"><circle cx="13" cy="7" r="6"/><circle cx="6" cy="13" r="6"/><circle cx="20" cy="13" r="6"/><circle cx="13" cy="19" r="6"/></g>
+    <circle cx="13" cy="13" r="4.5" fill="#fff"/>
+  </svg>
+  <svg class="gele" style="right:28%;bottom:35%;width:20px;animation-delay:-2.6s" viewBox="0 0 26 40" aria-hidden="true">
+    <path d="M13 40 V18" stroke="#5aa865" stroke-width="3" stroke-linecap="round"/>
+    <g fill="#ffd0dc"><circle cx="13" cy="7" r="6"/><circle cx="6" cy="13" r="6"/><circle cx="20" cy="13" r="6"/><circle cx="13" cy="19" r="6"/></g>
+    <circle cx="13" cy="13" r="4.5" fill="#ffd66b"/>
+  </svg>
+
+  <!-- Širdelė: miela, gera, maloni, bet truputį pasipūtusi pelytė (pagal dukros koliažą) -->
+  <div class="sirdeles-vieta" data-padarelis="sirdele" data-galva=".p-galva" role="button" tabindex="0" aria-label="Pelytė Širdelė">
+   <div class="sokikas">
+    <svg class="sirdele" viewBox="0 0 120 224" aria-hidden="true">
+      <defs>
+        <pattern id="audinys" width="4" height="4" patternUnits="userSpaceOnUse">
+          <rect width="4" height="4" class="p-megztinis-fonas"/>
+          <path d="M0 2 H4 M2 0 V4" stroke="#ffffff" stroke-opacity="0.1" stroke-width="0.7"/>
+        </pattern>
+        <symbol id="sirdis" viewBox="-7 -7 14 13">
+          <path d="M0 5 C-8 -1 -6 -8 0 -4 C6 -8 8 -1 0 5 Z" fill="#f27aa0"/>
+          <path d="M0 2.6 C-4.6 -1 -3.6 -5 0 -2.4 C3.6 -5 4.6 -1 0 2.6 Z" fill="#fff"/>
+        </symbol>
+      </defs>
+
+      <ellipse cx="60" cy="218" rx="30" ry="4" fill="#3d6b45" opacity="0.2"/>
+
+      <g class="p-visa">
+        <!-- kojytės su kojinėmis ir bateliais -->
+        <g stroke="#1f1d1b" stroke-width="1.8">
+          <rect x="44" y="172" width="10" height="38" fill="#f2c3cd"/>
+          <rect x="66" y="172" width="10" height="38" fill="#f2c3cd"/>
+          <ellipse cx="47" cy="212" rx="11" ry="5.5" fill="#ee8fa8" stroke-width="1.4"/>
+          <ellipse cx="73" cy="212" rx="11" ry="5.5" fill="#ee8fa8" stroke-width="1.4"/>
+        </g>
+
+        <!-- sijonėlis su pūkuotomis klostėmis -->
+        <g class="p-sijonas" filter="url(#popierius)">
+          <path d="M36 134 L84 134 L98 176 L22 176 Z" class="p-sijono-spalva"/>
+          <path d="M40 176 L50 146 L58 176 Z M62 176 L70 146 L80 176 Z" fill="#a69ca3"
+                stroke="#cbc3c8" stroke-width="2" stroke-dasharray="1 2.4"/>
+        </g>
+
+        <!-- nupiešti delniukai -->
+        <g stroke="#1f1d1b" stroke-width="1.7" stroke-linecap="round" fill="none">
+          <path d="M23 123 q-8 2 -9 9 M15 127 l-6 1 M16 130 l-5 4 M19 132 l-2 5"/>
+          <path d="M97 123 q8 2 9 9 M105 127 l6 1 M104 130 l5 4 M101 132 l2 5"/>
+        </g>
+
+        <!-- medžiaginis megztinukas su širdelėmis -->
+        <path d="M44 86 L76 86 L88 94 L102 120 L92 125 L82 110 L82 136 L38 136 L38 110 L28 125 L18 120 L32 94 Z"
+              fill="url(#audinys)" filter="url(#popierius)"/>
+        <use href="#sirdis" x="35" y="91" width="14" height="13"/>
+        <use href="#sirdis" x="71" y="91" width="14" height="13"/>
+        <use href="#sirdis" x="61" y="120" width="13" height="12"/>
+
+        <!-- galva (iš kiaušinių dėklo!) -->
+        <g class="p-galva">
+          <!-- dryžuotas šalikėlis su kaspinu -->
+          <path d="M42 78 Q60 84 80 79 L80 86 Q60 91 42 85 Z" fill="#eaa4b7"/>
+          <path d="M48 80 l2 7 M56 82 l2 7 M64 82 l1 7 M72 81 l1 6" stroke="#fbd6e0" stroke-width="1.6"/>
+          <path d="M44 81 L25 70 L30 86 Z" fill="#ef9fb5" stroke="#d97f98" stroke-width="1.2" stroke-linejoin="round"/>
+          <path d="M44 83 L27 95 L41 96 Z" fill="#ef9fb5" stroke="#d97f98" stroke-width="1.2" stroke-linejoin="round"/>
+
+          <!-- ausys su veltinio vidumi -->
+          <circle cx="34" cy="25" r="17" fill="#e6dcc8" stroke="#cfc3ab" stroke-width="1.5"/>
+          <circle cx="86" cy="25" r="17" fill="#e6dcc8" stroke="#cfc3ab" stroke-width="1.5"/>
+          <circle cx="37" cy="29" r="9" fill="#d8a6b6"/>
+          <circle cx="83" cy="29" r="9" fill="#d8a6b6" stroke="#f07fa0" stroke-width="1.5"/>
+
+          <!-- iškili, šiurkšti galvytė -->
+          <path d="M60 22 L72 24 L82 31 L87 42 L88 54 L84 66 L75 74 L62 78 L48 76 L38 68 L33 56 L33 43 L39 31 L48 25 Z"
+                fill="#ebe2d0" stroke="#cfc3ab" stroke-width="1.5" stroke-linejoin="round" filter="url(#popierius)"/>
+          <ellipse cx="54" cy="36" rx="12" ry="7" fill="#fff" opacity="0.35"/>
+          <g fill="#b8ac94">
+            <circle cx="42" cy="50" r="0.9"/><circle cx="78" cy="38" r="0.9"/><circle cx="70" cy="70" r="0.9"/>
+            <circle cx="46" cy="66" r="0.8"/><circle cx="82" cy="58" r="0.8"/><circle cx="62" cy="30" r="0.8"/>
+          </g>
+
+          <!-- akys -->
+          <ellipse class="p-akis" cx="50" cy="44" rx="3.8" ry="4.4" fill="#1f1d1b"/>
+          <ellipse class="p-akis" cx="71" cy="44" rx="3.8" ry="4.4" fill="#1f1d1b"/>
+
+          <!-- ūsai -->
+          <g class="p-usai" stroke="#1f1d1b" stroke-width="1.8" stroke-linecap="round">
+            <path d="M46 51 L35 48 M46 55 L34 55 M46 59 L35 62"/>
+          </g>
+          <g class="p-usai desine" stroke="#1f1d1b" stroke-width="1.8" stroke-linecap="round">
+            <path d="M74 51 L85 48 M74 55 L86 55 M74 59 L85 62"/>
+          </g>
+
+          <!-- nosytė ir burnytė -->
+          <circle cx="60" cy="55" r="7.5" fill="#c88f6e" stroke="#f07fa0" stroke-width="2.5"/>
+          <path d="M60 64 V69 M55 69 H65" stroke="#1f1d1b" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        </g>
+      </g>
+
+      <!-- širdutė, kai ji pasipučia -->
+      <use class="p-sirdute" href="#sirdis" x="92" y="20" width="16" height="15"/>
+    </svg>
+   </div>
+  </div>
+
+  <!-- Braškė: juokinga, protinga, išmintinga lėlė, stovi kairėje (pagal dukros lėlę ant lazdelės) -->
+  <div class="braskes-vieta" data-padarelis="braske" data-galva=".b-galva" role="button" tabindex="0" aria-label="Lėlė Braškė">
+   <div class="sokikas">
+    <svg class="braske" viewBox="-16 -26 126 262" aria-hidden="true">
+      <g class="b-visa">
+        <!-- baltas popieriaus kraštas, likęs po kirpimo -->
+        <use href="#b-silueta" stroke="#fffaf4" stroke-width="5" stroke-linejoin="round" filter="url(#popierius)"/>
+
+        <g id="b-silueta">
+          <!-- rankos -->
+          <path d="M14 96 Q12 90 22 89 L25 92 L25 150 Q24 158 17 158 Q11 158 11 151 Z" fill="#f5c3cc"/>
+          <path d="M86 96 Q88 90 78 89 L75 92 L75 150 Q76 158 83 158 Q89 158 89 151 Z" fill="#f5c3cc"/>
+          <!-- liemuo ir kaklas -->
+          <path d="M44 76 L56 76 L56 86 L66 86 Q78 86 78 94 L78 144 L22 144 L22 94 Q22 86 34 86 L44 86 Z" fill="#f5c3cc"/>
+          <!-- kelnės -->
+          <path d="M24 142 L76 142 L76 212 L54 212 L51 170 L49 170 L46 212 L24 212 Z" class="b-kelnes"/>
+          <!-- pėdutės -->
+          <path d="M24 211 L46 211 L46 221 Q46 228 39 228 L22 228 Q15 228 18 220 Z" fill="#f5c3cc"/>
+          <path d="M54 211 L76 211 L82 220 Q85 228 78 228 L61 228 Q54 228 54 221 Z" fill="#f5c3cc"/>
+        </g>
+
+        <!-- blizgančios, raukšlėtos kelnės -->
+        <g opacity="0.45">
+          <path d="M28 150 q6 -3 10 2 M40 162 q5 -4 9 1 M58 156 q5 -3 10 1 M30 180 q5 -4 9 0 M60 186 q5 -3 10 1 M29 200 q5 -3 9 1 M60 202 q4 -3 9 0"
+                stroke="#a92a6e" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="36" cy="172" r="2" fill="#ffd1ea"/><circle cx="66" cy="168" r="2" fill="#ffd1ea"/>
+          <circle cx="44" cy="192" r="1.6" fill="#ffd1ea"/><circle cx="64" cy="146" r="1.6" fill="#ffd1ea"/>
+        </g>
+        <!-- raudoni brūkšneliai ant pėdučių -->
+        <path d="M27 222 v-3 M30 222 v-3 M70 220 v-3 M73 220 v-3" stroke="#e0453a" stroke-width="1.4" stroke-linecap="round"/>
+
+        <!-- mėlyni marškinėliai su violetine dėme -->
+        <path d="M22 94 Q22 86 34 86 L44 86 Q50 90 56 86 L66 86 Q78 86 78 94 L80 114 L73 114 L73 126 L27 126 L27 114 L20 114 Z" fill="#8ec5ec"/>
+        <path d="M30 98 l8 14 M42 92 l10 22 M58 94 l8 16 M68 100 l4 10" stroke="#6aa9dc" stroke-width="1.4" opacity="0.6"/>
+        <ellipse cx="49" cy="104" rx="11" ry="7" fill="#9b7ad6" opacity="0.6"/>
+
+        <!-- raudona apyrankė -->
+        <path d="M11 141 l3 -2 l3 2 l3 -2 l3 2 l2 -1" stroke="#e0453a" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- galva -->
+        <g class="b-galva">
+          <!-- plaukai (nugarinė dalis) su baltu popieriaus kraštu -->
+          <path d="M50 4 C20 4 10 22 10 42 L10 84 L30 84 L30 70 L70 70 L70 84 L90 84 L90 42 C90 22 80 4 50 4 Z"
+                class="b-plaukai" stroke="#fffaf4" stroke-width="2.5" stroke-linejoin="round" filter="url(#popierius)"/>
+          <!-- oranžinis vėrinys -->
+          <g fill="#f07a2a">
+            <circle cx="41" cy="84" r="1.6"/><circle cx="44.5" cy="85.4" r="1.6"/><circle cx="48" cy="86" r="1.6"/>
+            <circle cx="52" cy="86" r="1.6"/><circle cx="55.5" cy="85.4" r="1.6"/><circle cx="59" cy="84" r="1.6"/>
+          </g>
+          <!-- veidukas -->
+          <path d="M26 34 Q26 24 36 24 L64 24 Q74 24 74 34 L74 62 Q74 76 60 78 L40 78 Q26 76 26 62 Z" fill="#f5c3cc"/>
+          <!-- kirpčiukai -->
+          <path d="M23 40 Q28 16 50 15 Q72 16 77 40 L71 30 L63 35 L55 26 L47 35 L39 28 L30 37 Z" class="b-plaukai"/>
+          <path d="M34 20 l-6 14 M44 16 l-4 12 M56 16 l4 12 M66 20 l6 14 M14 46 v30 M86 46 v30 M18 40 v36 M82 40 v36"
+                stroke="#9e3b28" stroke-width="1.3" opacity="0.55" stroke-linecap="round"/>
+          <!-- širdelė viršugalvyje -->
+          <path d="M50 12 C44 7 46 2 50 5 C54 2 56 7 50 12 Z" fill="#f4a7b9"/>
+
+          <!-- antakiai -->
+          <g class="b-antakiai" stroke="#2a2422" stroke-width="1.5" stroke-linecap="round">
+            <path d="M38 40 q4 -3 7 -1"/><path d="M55 39 q3 -2 7 1"/>
+          </g>
+          <!-- akys -->
+          <ellipse class="b-akis" cx="42" cy="46" rx="2.4" ry="2.8" fill="#2a2422"/>
+          <ellipse class="b-akis" cx="58" cy="46" rx="2.4" ry="2.8" fill="#2a2422"/>
+          <!-- nosytė -->
+          <path d="M52 51 L47 57 L52 58" stroke="#2a2422" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- šypsenėlė (maža ir didelė, kai šauna mintis) -->
+          <path class="b-sypsena-maza" d="M44 64 Q50 69 56 64" stroke="#2a2422" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          <path class="b-sypsena-didele" d="M42 63 Q50 72 58 63 Z" fill="#fff" stroke="#2a2422" stroke-width="1.5" stroke-linejoin="round"/>
+          <!-- skruostukai -->
+          <ellipse cx="35" cy="60" rx="4" ry="2.4" fill="#f08aa2" opacity="0.4"/>
+          <ellipse cx="65" cy="60" rx="4" ry="2.4" fill="#f08aa2" opacity="0.4"/>
+          <!-- perliukų auskarai -->
+          <circle cx="27" cy="67" r="3" fill="#f6bccd"/><circle cx="26" cy="66" r="1" fill="#fff"/>
+          <circle cx="73" cy="66" r="3" fill="#f6bccd"/><circle cx="72" cy="65" r="1" fill="#fff"/>
+        </g>
+      </g>
+
+      <!-- lemputė: „Aha! Sugalvojau!“ -->
+      <g transform="translate(-122 2) scale(1.4)">
+      <g class="b-lempute">
+        <g stroke="#ffcc33" stroke-width="2.4" stroke-linecap="round">
+          <path d="M92 -22 v4 M80 -16 l3 3 M104 -16 l-3 3 M76 -4 h4 M104 -4 h4"/>
+        </g>
+        <circle cx="92" cy="-5" r="9" fill="#ffe46b" stroke="#e6b422" stroke-width="1.5"/>
+        <rect x="88" y="3" width="8" height="6" rx="1.5" fill="#b7b0a6"/>
+        <path d="M89 -6 q3 4 6 0" stroke="#e6a522" stroke-width="1.2" fill="none"/>
+      </g>
+      </g>
+    </svg>
+   </div>
+  </div>
+
+  <!-- Spurga: juokingas mieguistas šuniukas ant savo dekučio (pagal dukros piešinį) -->
+  <div class="spurgos-vieta" data-padarelis="spurga" data-galva=".s-galva" role="button" tabindex="0" aria-label="Šuniukas Spurga ant geltono dekučio">
+    <svg class="spurga" viewBox="0 0 320 200" aria-hidden="true">
+      <!-- šešėlis ant žolės -->
+      <ellipse cx="160" cy="190" rx="140" ry="9" fill="#3d6b45" opacity="0.2"/>
+
+      <!-- dekutis su dygsniais (kaip piešinyje) -->
+      <path style="fill:var(--dekucio-spalva)" d="M22 156 Q16 126 58 124 L262 120 Q302 122 300 154 Q302 186 260 186 L54 188 Q18 188 22 156 Z"
+            stroke="#e6c862" stroke-width="3"/>
+      <path d="M38 157 Q36 138 64 136 L258 132 Q286 134 285 155 Q286 174 258 175 L60 176 Q38 176 38 157 Z"
+            fill="none" stroke="#e0bd4a" stroke-width="2.5" stroke-dasharray="9 8" stroke-linecap="round"/>
+
+      <g class="sokikas">
+      <g style="stroke:var(--kontūras)" class="s-kunas" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">
+        <!-- pūkuota uodegytė -->
+        <path style="fill:var(--spurgos-spalva)" d="M232 112 C262 98 278 70 264 58 C256 52 246 60 252 68 C258 80 246 96 226 104 Z"/>
+        <path d="M262 64 l5 -4 M266 74 l6 -2" fill="none" stroke-width="2"/>
+        <!-- kūnas (apvalus ir pūkuotas) -->
+        <path style="fill:var(--spurgos-spalva)" d="M108 104 q4 -14 18 -14 q6 -10 18 -6 q8 -9 20 -4 q9 -8 20 -2 q10 -6 20 2 q12 -2 18 10 q14 4 16 20 q8 14 0 28 q-2 14 -16 18 L124 170 C100 166 96 120 108 104 Z"/>
+        <!-- kailiuko brūkšneliai -->
+        <g style="stroke:var(--spurgos-seselis)" fill="none" stroke-width="2.2">
+          <path d="M150 104 q4 -4 8 0"/><path d="M172 98 q4 -4 8 0"/><path d="M196 102 q4 -4 8 0"/>
+          <path d="M160 122 q4 -4 8 0"/><path d="M184 118 q4 -4 8 0"/><path d="M208 124 q4 -4 8 0"/>
+          <path d="M146 140 q4 -4 8 0"/><path d="M172 142 q4 -4 8 0"/>
+        </g>
+        <!-- užpakalinė koja (sulenkta) -->
+        <path style="fill:var(--spurgos-spalva)" d="M206 116 C236 104 258 136 246 160 C240 170 228 172 218 170 L194 171 C182 171 182 157 194 157 L214 156 C202 146 196 126 206 116 Z"/>
+        <path d="M198 159 v9 M206 159 v9" fill="none" stroke-width="2"/>
+        <!-- priekinės kojos (ištiestos, storulės) -->
+        <path style="fill:var(--spurgos-spalva)" d="M122 114 C100 124 78 132 60 136 C44 138 42 156 58 156 L86 154 C106 152 122 146 130 138 Z"/>
+        <path d="M49 142 h7 M49 149 h7" fill="none" stroke-width="2"/>
+        <path style="fill:var(--spurgos-spalva)" d="M126 136 C106 148 88 156 72 158 C56 160 56 176 72 175 L100 172 C120 170 132 162 136 152 Z"/>
+        <path d="M62 163 h7 M62 170 h7" fill="none" stroke-width="2"/>
+        <!-- krūtinė su pūkuotu seilinuku -->
+        <path style="fill:var(--spurgos-spalva)" d="M90 74 C82 104 96 134 124 142 C138 126 142 102 134 82 Z"/>
+        <path d="M96 88 q-4 14 2 24 q-2 8 6 12 q4 8 12 6 q8 4 12 -4 q6 -4 4 -12 q6 -10 2 -22 Z" fill="#d9effc" stroke="none"/>
+        <path style="stroke:var(--spurgos-seselis)" d="M104 106 q3 -3 6 0 M112 118 q3 -3 6 0" fill="none" stroke-width="2"/>
+
+        <g class="s-galva">
+        <g transform="translate(112 70) scale(1.22) translate(-112 -70)">
+        <!-- ausys -->
+        <path style="fill:var(--spurgos-spalva)" d="M90 46 Q60 26 64 10 Q70 4 80 8 Q98 16 108 34 Z"/>
+        <path d="M88 38 Q72 26 72 16 Q82 14 98 32 Z" fill="#d9effc" stroke="none"/>
+        <g class="s-ausis-desine">
+          <path style="fill:var(--spurgos-spalva)" d="M116 34 Q128 14 148 8 Q160 8 160 16 Q158 38 140 50 Z"/>
+          <path d="M124 34 Q134 20 152 15 Q152 30 140 42 Z" fill="#d9effc" stroke="none"/>
+        </g>
+
+        <!-- galva -->
+        <path style="fill:var(--spurgos-spalva)" d="M78 58 C76 28 148 26 148 58 C150 86 132 98 113 98 C92 98 76 86 78 58 Z"/>
+        <!-- pūkų kuokšteliai ant skruostų ir viršugalvio -->
+        <path d="M79 66 l-7 3 l6 3 l-6 4 l7 1" fill="none" stroke-width="2.4"/>
+        <path d="M147 66 l7 3 l-6 3 l6 4 l-7 1" fill="none" stroke-width="2.4"/>
+        <path d="M104 31 q4 -8 8 0 q4 -8 8 0" fill="none" stroke-width="2.4"/>
+        <!-- šviesesnis snukutis -->
+        <ellipse cx="112" cy="77" rx="15" ry="11" fill="#d9effc" stroke="none"/>
+        <!-- rausvi skruostukai -->
+        <ellipse cx="90" cy="75" rx="6.5" ry="4" fill="#ff9fc0" opacity="0.55" stroke="none"/>
+        <ellipse cx="136" cy="75" rx="6.5" ry="4" fill="#ff9fc0" opacity="0.55" stroke="none"/>
+
+        <!-- akys (jos užsnūsta) -->
+        <g class="s-akis" stroke="none">
+          <circle cx="98" cy="58" r="7.5" fill="#26303f"/>
+          <circle cx="100.5" cy="55.5" r="2.6" fill="#fff"/>
+        </g>
+        <g class="s-akis" stroke="none">
+          <circle cx="126" cy="58" r="7.5" fill="#26303f"/>
+          <circle cx="128.5" cy="55.5" r="2.6" fill="#fff"/>
+        </g>
+        <!-- pakeltas antakis (išdykėlio ženklas!) -->
+        <path class="s-antakis" d="M118 47 Q126 40 134 46" fill="none" stroke-width="2.6"/>
+        <path d="M91 50 l4 1" fill="none" stroke-width="2"/>
+
+        <!-- violetinė nosytė -->
+        <ellipse style="fill:var(--nosytes-spalva)" cx="112" cy="72" rx="7" ry="5" stroke="none"/>
+        <ellipse cx="110" cy="70.5" rx="2.2" ry="1.4" fill="#fff" opacity="0.7" stroke="none"/>
+        <!-- šypsena -->
+        <path d="M100 80 Q105 87 112 81 Q119 87 124 80" fill="none" stroke-width="2.6"/>
+        </g>
+        </g>
+      </g>
+      </g>
+
+      <!-- Zzz -->
+      <text class="zzz z1" x="180" y="46" font-size="16">z</text>
+      <text class="zzz z2" x="192" y="32" font-size="20">z</text>
+      <text class="zzz z3" x="206" y="16" font-size="24">Z</text>
+    </svg>
+  </div>
+
+  <p class="patarimas" id="patarimas">👆 Paspausk padarėlį!</p>
+
+  <button class="laukimu-mygtukas kaireje" id="i-kiema" type="button" aria-label="Kiemas: visi laukimai">🏡</button>
+  <button class="laukimu-mygtukas" id="atidaryti" type="button" aria-label="Ko laukiam? Priskirti dieną padarėliui">📅</button>
+
+</main>
+
+<section class="skydelis" id="skydelis" role="dialog" aria-modal="true" aria-labelledby="skydelio-pavadinimas" hidden>
+  <div class="skydelio-vidus">
+    <div class="skydelio-galva">
+      <h2 id="skydelio-pavadinimas">Ko laukiam?</h2>
+      <button class="uzdaryti" id="uzdaryti" type="button" aria-label="Uždaryti">✕</button>
+    </div>
+
+    <div class="zingsnis">
+      <h3><b>1</b>Kas lauks?</h3>
+      <div class="padareliu-tinklelis" id="korteles"></div>
+    </div>
+
+    <div class="zingsnis">
+      <h3><b>2</b>Ko lauks?</h3>
+      <div class="tipai" id="tipai"></div>
+    </div>
+
+    <div class="zingsnis">
+      <h3><label for="pavadinimas"><b>3</b>Kaip pavadinsim?</label></h3>
+      <input class="laukas" id="pavadinimas" type="text" maxlength="30" autocomplete="off">
+    </div>
+
+    <div class="zingsnis">
+      <h3><label for="data"><b>4</b>Kada?</label></h3>
+      <input class="laukas" id="data" type="date">
+    </div>
+
+    <p class="klaida" id="klaida" hidden></p>
+
+    <div class="veiksmai">
+      <button class="issaugoti" id="issaugoti" type="button">Išsaugoti</button>
+      <button class="atlaisvinti" id="atlaisvinti" type="button" hidden>Atlaisvinti padarėlį</button>
+    </div>
+  </div>
+</section>
+
+<section class="skydelis kiemas" id="kiemas" role="dialog" aria-modal="true" aria-labelledby="kiemo-pavadinimas" hidden>
+  <div class="skydelio-vidus">
+    <div class="skydelio-galva">
+      <h2 id="kiemo-pavadinimas">Kiemas</h2>
+      <button class="uzdaryti" id="kiemas-uzdaryti" type="button" aria-label="Uždaryti">✕</button>
+    </div>
+
+    <svg class="tvora" aria-hidden="true">
+      <defs>
+        <pattern id="tvoros-lentos" width="28" height="58" patternUnits="userSpaceOnUse">
+          <path d="M4 58 V16 L14 5 L24 16 V58 Z" fill="#f6d3a2" stroke="#c98d4f" stroke-width="2" stroke-linejoin="round"/>
+        </pattern>
+      </defs>
+      <rect x="0" y="22" width="100%" height="7" rx="3" fill="#d9a066"/>
+      <rect x="0" y="42" width="100%" height="7" rx="3" fill="#d9a066"/>
+      <rect x="0" y="0" width="100%" height="58" fill="url(#tvoros-lentos)"/>
+    </svg>
+
+    <div class="zingsnis">
+      <h3>Laukiam 🎈</h3>
+      <div class="kiemo-sarasas" id="kiemo-sarasas"></div>
+      <div class="tuscias-kiemas" id="tuscias-kiemas" hidden>
+        <p>Kol kas niekas nieko nelaukia 🙂</p>
+        <button class="issaugoti" id="kiemas-priskirti" type="button">📅 Priskirti dieną</button>
+      </div>
+    </div>
+
+    <div class="zingsnis" id="laisvu-zingsnis">
+      <h3>Laisvi padarėliai</h3>
+      <div class="laisvi" id="laisvi"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* =========================================================
+   ✨ KODO PASLAPTIS ✨
+   Ką sako padarėliai. Kiekvienas sakinys yra kabutėse "...",
+   o tarp sakinių dedamas kablelis. Pakeisk arba pridėk savo!
+   ========================================================= */
+const FRAZES = {
+  lietuviukas: [
+    "Labas! Skrendam kartu?",
+    "Čiru-čiru! 🎵",
+    "Iš viršaus viską matau!",
+    "Tu mano geriausias draugas!"
+  ],
+  spurga: [
+    "Aš nemiegojau! Tik mirksėjau...",
+    "Žiooov... jau rytas?",
+    "Dar penkias minutes... 😴",
+    "Kas čia mane žadina? 😄"
+  ],
+  sirdele: [
+    "Hmf! Bet tu man patinki 💗",
+    "Ar matei mano sijonėlį?",
+    "Aš pati gražiausia pelytė!",
+    "Labas, mieloji! 💕"
+  ],
+  braske: [
+    "Aha! Turiu idėją! 💡",
+    "Ar žinai, kad braškės sėklytės yra išorėje?",
+    "Gera mintis niekada nepavėluoja!",
+    "Hmm... įdomu, kiek liko laukti?"
+  ]
+};
+
+const KALBEJIMO_LAIKAS = 3000;   // kiek milisekundžių matosi debesėlis (1000 = 1 sekundė)
+
+/* ✨ KODO PASLAPTIS ✨  Laukimų rūšys: ženkliukas ir pavadinimas */
+const TIPAI = {
+  gimtadienis: { zenklas: "🎂", vardas: "Gimtadienis", pavyzdys: "Pvz.: Mano gimtadienis" },
+  kelione:     { zenklas: "⛰️", vardas: "Kelionė",     pavyzdys: "Pvz.: Kelionė į kalnus" },
+  svente:      { zenklas: "🎉", vardas: "Šventė",      pavyzdys: "Pvz.: Kalėdos" },
+  kita:        { zenklas: "⭐", vardas: "Kita",        pavyzdys: "Pvz.: Atvažiuoja močiutė" }
+};
+
+const VARDAI = { lietuviukas: "Lietuviukas", spurga: "Spurga", sirdele: "Širdelė", braske: "Braškė" };
+
+/* ✨ KODO PASLAPTIS ✨
+   Kaip kompiuteris parenka žodį:
+   1, 21, 31 … → „diena“      2–9, 22–29 … → „dienos“      10–20, 30 … → „dienų“
+   Gali pakeisti žodžius, pvz., į „dienelė“, „dienelės“, „dienelių“! */
+const DIENU_ZODZIAI = { viena: "diena", kelios: "dienos", daug: "dienų" };
+
+/* ---------- Toliau – programėlės „variklis“ ---------- */
+(function () {
+  const pasaulis = document.querySelector(".pasaulis");
+  const patarimas = document.getElementById("patarimas");
+
+  /* --- Laukimai saugomi telefone --- */
+  const RAKTAS = "laukiam-kartu-laukimai";
+  let laukimai = {};
+  try { laukimai = JSON.parse(localStorage.getItem(RAKTAS)) || {}; } catch (e) { laukimai = {}; }
+  function issaugokTelefone() {
+    try { localStorage.setItem(RAKTAS, JSON.stringify(laukimai)); } catch (e) { /* jei nepavyksta, liks iki uždarymo */ }
+  }
+
+  /* --- Datos ir dienų skaičiavimas --- */
+  function siandien() {
+    const d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function grazusData(iso) {
+    const [m, men, d] = iso.split("-").map(Number);
+    const menesiai = ["sausio", "vasario", "kovo", "balandžio", "gegužės", "birželio", "liepos", "rugpjūčio", "rugsėjo", "spalio", "lapkričio", "gruodžio"];
+    return menesiai[men - 1] + " " + d + " d.";
+  }
+  function likoDienu(iso) {
+    const [m, men, d] = iso.split("-").map(Number);
+    const tikslas = new Date(m, men - 1, d);
+    const dabar = new Date();
+    const siandienos = new Date(dabar.getFullYear(), dabar.getMonth(), dabar.getDate());
+    return Math.round((tikslas - siandienos) / 86400000);
+  }
+  function dienuZodis(n) {
+    const paskutinis = n % 10, du = n % 100;
+    if (du >= 11 && du <= 19) return DIENU_ZODZIAI.daug;
+    if (paskutinis === 1) return DIENU_ZODZIAI.viena;
+    if (paskutinis >= 2) return DIENU_ZODZIAI.kelios;
+    return DIENU_ZODZIAI.daug;
+  }
+  function laukimas(vardas) {
+    const l = laukimai[vardas];
+    return l && TIPAI[l.tipas] ? l : null;
+  }
+
+  /* --- Sluoksniai debesėliams ir ženkliukams --- */
+  const debeseliai = document.createElement("div");
+  debeseliai.className = "debeseliai";
+  pasaulis.appendChild(debeseliai);
+  const zenkliukai = document.createElement("div");
+  zenkliukai.className = "zenkliukai";
+  pasaulis.appendChild(zenkliukai);
+
+  const padareliai = {};
+  const kalba = new Set();
+
+  function padekBurbula(p) {
+    const ribos = pasaulis.getBoundingClientRect();
+    const galva = (p.galva || p.el).getBoundingClientRect();
+    const plotis = p.burbulas.offsetWidth;
+    const aukstis = p.burbulas.offsetHeight;
+    const centras = galva.left + galva.width / 2 - ribos.left;
+    let x = centras - plotis / 2;
+    x = Math.max(12, Math.min(ribos.width - plotis - 12, x));
+    let y = galva.top - ribos.top - aukstis - 14;
+    const apacioje = y < 8;
+    if (apacioje) y = galva.bottom - ribos.top + 14;
+    p.burbulas.classList.toggle("apacioje", apacioje);
+    p.burbulas.style.left = x + "px";
+    p.burbulas.style.top = y + "px";
+    const uodega = Math.max(20, Math.min(plotis - 20, centras - x));
+    p.burbulas.style.setProperty("--uodega", uodega + "px");
+  }
+
+  function padekZenkliuka(p) {
+    if (p.zenkliukas.hidden) return;
+    const ribos = pasaulis.getBoundingClientRect();
+    const r = p.kunas.getBoundingClientRect();
+    const plotis = p.zenkliukas.offsetWidth;
+    let x = r.left + r.width / 2 - ribos.left - plotis / 2;
+    x = Math.max(8, Math.min(ribos.width - plotis - 8, x));
+    p.zenkliukas.style.left = x + "px";
+    p.zenkliukas.style.top = (r.bottom - ribos.top + 2) + "px";
+  }
+
+  // Kiekvieną kadrą: debesėliai ir ženkliukai seka padarėlius (Lietuviukas juk skraido!)
+  function sek() {
+    kalba.forEach(padekBurbula);
+    Object.values(padareliai).forEach(padekZenkliuka);
+    requestAnimationFrame(sek);
+  }
+
+  function atnaujinkZenkliuka(p) {
+    const l = laukimas(p.vardas);
+    if (l) {
+      const n = likoDienu(l.data);
+      p.zenkliukas.textContent = TIPAI[l.tipas].zenklas + " " + (n > 0 ? n + " d." : "Šiandien!");
+      p.zenkliukas.title = l.pavadinimas;
+      p.zenkliukas.hidden = false;
+    } else {
+      p.zenkliukas.hidden = true;
+    }
+  }
+
+  function skaiciavimas(l) {
+    const n = likoDienu(l.data);
+    const dezute = document.createElement("div");
+    dezute.className = "skaiciavimas";
+    const pav = document.createElement("span");
+    pav.className = "s-pav";
+    pav.textContent = TIPAI[l.tipas].zenklas + " " + l.pavadinimas;
+    const sk = document.createElement("span");
+    sk.className = "s-sk";
+    const zodis = document.createElement("span");
+    zodis.className = "s-zodis";
+    if (n <= 0) {
+      sk.textContent = "🎉";
+      zodis.textContent = "Šiandien!";
+    } else {
+      sk.textContent = n;
+      zodis.textContent = dienuZodis(n) + " liko!" + (n === 1 ? " Jau rytoj!" : "");
+    }
+    dezute.append(pav, sk, zodis);
+    return dezute;
+  }
+
+  function prabilk(p, tekstas) {
+    // 1. Pašoka
+    p.sokikas.classList.remove("soka");
+    void p.sokikas.getBoundingClientRect();
+    p.sokikas.classList.add("soka");
+
+    // 2. Jei laukia – pasako, kiek liko. Paspaudus dar kartą – pasako savo sakinį.
+    const l = laukimas(p.vardas);
+    if (!tekstas && l && !(p.rodeSkaiciu && kalba.has(p))) {
+      tekstas = skaiciavimas(l);
+      p.rodeSkaiciu = true;
+    } else {
+      p.rodeSkaiciu = false;
+    }
+    // Išsirenka sakinį (ne tą patį, kaip praeitą kartą)
+    if (!tekstas) {
+      const frazes = FRAZES[p.vardas] || ["Labas!"];
+      let i;
+      do { i = Math.floor(Math.random() * frazes.length); }
+      while (frazes.length > 1 && i === p.paskutine);
+      p.paskutine = i;
+      tekstas = frazes[i];
+    }
+
+    // 3. Kiti nutyla (kalba po vieną), o šis parodo debesėlį
+    kalba.forEach(function (q) {
+      if (q !== p) { clearTimeout(q.laikmatis); q.burbulas.hidden = true; kalba.delete(q); }
+    });
+    if (typeof tekstas === "string") p.burbulas.textContent = tekstas;
+    else p.burbulas.replaceChildren(tekstas);
+    p.burbulas.hidden = false;
+    p.burbulas.classList.remove("rodomas");
+    void p.burbulas.offsetWidth;
+    p.burbulas.classList.add("rodomas");
+    kalba.add(p);
+    padekBurbula(p);
+
+    clearTimeout(p.laikmatis);
+    p.laikmatis = setTimeout(function () {
+      p.burbulas.hidden = true;
+      kalba.delete(p);
+    }, KALBEJIMO_LAIKAS);
+
+    if (patarimas) patarimas.classList.add("dingsta");
+  }
+
+  document.querySelectorAll("[data-padarelis]").forEach(function (el) {
+    const p = {
+      vardas: el.dataset.padarelis,
+      el: el,
+      galva: el.dataset.galva ? el.querySelector(el.dataset.galva) : el.querySelector("svg"),
+      sokikas: el.querySelector(".sokikas"),
+      kunas: el.querySelector(".sokikas") || el,
+      burbulas: document.createElement("div"),
+      zenkliukas: document.createElement("div"),
+      paskutine: -1,
+      laikmatis: 0
+    };
+    p.burbulas.className = "burbulas";
+    p.burbulas.hidden = true;
+    p.burbulas.setAttribute("role", "status");
+    debeseliai.appendChild(p.burbulas);
+    p.zenkliukas.className = "zenkliukas";
+    p.zenkliukas.hidden = true;
+    zenkliukai.appendChild(p.zenkliukas);
+    padareliai[p.vardas] = p;
+    atnaujinkZenkliuka(p);
+
+    p.sokikas.addEventListener("animationend", function (e) {
+      if (e.target === p.sokikas) p.sokikas.classList.remove("soka");
+    });
+    el.addEventListener("click", function () { prabilk(p); });
+    el.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); prabilk(p); }
+    });
+  });
+  requestAnimationFrame(sek);
+
+  /* =========================================================
+     Skydelis „Ko laukiam?“
+     ========================================================= */
+  const skydelis = document.getElementById("skydelis");
+  const korteles = document.getElementById("korteles");
+  const tipai = document.getElementById("tipai");
+  const pavadinimas = document.getElementById("pavadinimas");
+  const data = document.getElementById("data");
+  const klaida = document.getElementById("klaida");
+  const atlaisvinti = document.getElementById("atlaisvinti");
+  const atidaryti = document.getElementById("atidaryti");
+
+  let pasirinktas = "lietuviukas";
+  let pasirinktasTipas = "gimtadienis";
+
+
+  // Gyvas padarėlio portretas (kopija iš pasaulio)
+  function sukurkPortreta(vardas) {
+    const portretas = document.createElement("div");
+    portretas.className = "portretas";
+    const kopija = padareliai[vardas].el.querySelector("svg").cloneNode(true);
+    kopija.querySelectorAll("[id]").forEach(function (x) { x.removeAttribute("id"); });
+    kopija.querySelectorAll(".soka").forEach(function (x) { x.classList.remove("soka"); });
+    // Aukštiems padarėliams portrete rodom tik viršutinę dalį
+    const iskarpa = { sirdele: "8 4 104 112", braske: "2 0 96 104" }[vardas];
+    if (iskarpa) { kopija.setAttribute("viewBox", iskarpa); kopija.style.overflow = "hidden"; }
+    portretas.appendChild(kopija);
+    return portretas;
+  }
+
+  // Padarėlių kortelės (su gyvais portretais)
+  Object.keys(VARDAI).forEach(function (vardas) {
+    const p = padareliai[vardas];
+    const mygtukas = document.createElement("button");
+    mygtukas.type = "button";
+    mygtukas.className = "padarelio-kortele";
+    mygtukas.dataset.vardas = vardas;
+    const portretas = sukurkPortreta(vardas);
+    const v = document.createElement("span"); v.className = "vardas"; v.textContent = VARDAI[vardas];
+    const b = document.createElement("span"); b.className = "busena";
+    mygtukas.append(portretas, v, b);
+    mygtukas.addEventListener("click", function () { rinkisPadareli(vardas); });
+    korteles.appendChild(mygtukas);
+  });
+
+  // Laukimų rūšių mygtukai
+  Object.keys(TIPAI).forEach(function (raktas) {
+    const t = TIPAI[raktas];
+    const mygtukas = document.createElement("button");
+    mygtukas.type = "button";
+    mygtukas.className = "tipas";
+    mygtukas.dataset.tipas = raktas;
+    const z = document.createElement("span"); z.textContent = t.zenklas;
+    mygtukas.append(z, document.createTextNode(t.vardas));
+    mygtukas.addEventListener("click", function () { rinkisTipa(raktas); });
+    tipai.appendChild(mygtukas);
+  });
+
+  function atnaujinkKorteles() {
+    korteles.querySelectorAll(".padarelio-kortele").forEach(function (k) {
+      const l = laukimai[k.dataset.vardas];
+      k.setAttribute("aria-pressed", String(k.dataset.vardas === pasirinktas));
+      k.querySelector(".busena").textContent = l && TIPAI[l.tipas]
+        ? TIPAI[l.tipas].zenklas + " " + l.pavadinimas
+        : "Laisvas 🙂";
+    });
+  }
+
+  function rinkisTipa(raktas) {
+    pasirinktasTipas = raktas;
+    tipai.querySelectorAll(".tipas").forEach(function (t) {
+      t.setAttribute("aria-pressed", String(t.dataset.tipas === raktas));
+    });
+    pavadinimas.placeholder = TIPAI[raktas].pavyzdys;
+  }
+
+  function rinkisPadareli(vardas) {
+    pasirinktas = vardas;
+    const l = laukimai[vardas];
+    rinkisTipa(l ? l.tipas : "gimtadienis");
+    pavadinimas.value = l ? l.pavadinimas : "";
+    data.value = l ? l.data : "";
+    atlaisvinti.hidden = !l;
+    atlaisvinti.classList.remove("tikrai");
+    atlaisvinti.textContent = "Atlaisvinti padarėlį";
+    klaida.hidden = true;
+    atnaujinkKorteles();
+  }
+
+  function rodykKlaida(tekstas) {
+    klaida.textContent = tekstas;
+    klaida.hidden = false;
+  }
+
+  function atidaryk(kas) {
+    data.min = siandien();
+    const laisvas = Object.keys(VARDAI).find(function (v) { return !laukimai[v]; });
+    rinkisPadareli(typeof kas === "string" ? kas : (laisvas || "lietuviukas"));
+    skydelis.hidden = false;
+    if (patarimas) patarimas.classList.add("dingsta");
+  }
+  function uzdaryk() {
+    skydelis.hidden = true;
+    atidaryti.focus();
+  }
+
+  document.getElementById("issaugoti").addEventListener("click", function () {
+    const pav = pavadinimas.value.trim() || TIPAI[pasirinktasTipas].vardas;
+    if (!data.value) { rodykKlaida("Pasirink dieną, kurios lauksim 📅"); return; }
+    if (data.value < siandien()) { rodykKlaida("Ši diena jau praėjo. Pasirink būsimą dieną 🙂"); return; }
+    laukimai[pasirinktas] = { tipas: pasirinktasTipas, pavadinimas: pav, data: data.value };
+    issaugokTelefone();
+    const p = padareliai[pasirinktas];
+    atnaujinkZenkliuka(p);
+    uzdaryk();
+    setTimeout(function () {
+      prabilk(p, "Hurra! Lauksiu: " + pav + " (" + grazusData(data.value) + ") 🎉");
+    }, 250);
+  });
+
+  atlaisvinti.addEventListener("click", function () {
+    if (!atlaisvinti.classList.contains("tikrai")) {
+      atlaisvinti.classList.add("tikrai");
+      atlaisvinti.textContent = "Tikrai? Paspausk dar kartą";
+      return;
+    }
+    delete laukimai[pasirinktas];
+    issaugokTelefone();
+    const p = padareliai[pasirinktas];
+    atnaujinkZenkliuka(p);
+    uzdaryk();
+    setTimeout(function () { prabilk(p, "Jėj, aš vėl laisvas! Ko lauksim dabar?"); }, 250);
+  });
+
+  /* =========================================================
+     Kiemas: visi laukimai kartu
+     ========================================================= */
+  const kiemas = document.getElementById("kiemas");
+  const kiemoSarasas = document.getElementById("kiemo-sarasas");
+  const tusciasKiemas = document.getElementById("tuscias-kiemas");
+  const laisvi = document.getElementById("laisvi");
+  const laisvuZingsnis = document.getElementById("laisvu-zingsnis");
+  const iKiema = document.getElementById("i-kiema");
+
+  function pieskKiema() {
+    kiemoSarasas.replaceChildren();
+    laisvi.replaceChildren();
+    const visi = Object.keys(VARDAI);
+    const laukiantys = visi.filter(laukimas).sort(function (a, b) {
+      return laukimai[a].data.localeCompare(laukimai[b].data);
+    });
+    const neuzimti = visi.filter(function (v) { return !laukimas(v); });
+
+    laukiantys.forEach(function (vardas) {
+      const l = laukimai[vardas];
+      const n = likoDienu(l.data);
+      const korta = document.createElement("button");
+      korta.type = "button";
+      korta.className = "kiemo-kortele";
+      const portretas = sukurkPortreta(vardas);
+      portretas.classList.add("sokikas");
+      const tekstas = document.createElement("div");
+      tekstas.className = "kiemo-tekstas";
+      const v = document.createElement("span"); v.className = "vardas"; v.textContent = VARDAI[vardas];
+      const iv = document.createElement("span"); iv.className = "ivykis"; iv.textContent = TIPAI[l.tipas].zenklas + " " + l.pavadinimas;
+      const kada = document.createElement("span"); kada.className = "kada"; kada.textContent = grazusData(l.data);
+      tekstas.append(v, iv, kada);
+      const lenta = document.createElement("div");
+      lenta.className = "kiemo-lenta";
+      const sk = document.createElement("span"); sk.className = "sk";
+      const zodis = document.createElement("span"); zodis.className = "zodis";
+      if (n <= 0) { sk.textContent = "🎉"; zodis.textContent = "Šiandien!"; }
+      else { sk.textContent = n; zodis.textContent = dienuZodis(n); }
+      lenta.append(sk, zodis);
+      korta.append(portretas, tekstas, lenta);
+      korta.setAttribute("aria-label", VARDAI[vardas] + " laukia: " + l.pavadinimas + ". " + (n > 0 ? "Liko " + n + " " + dienuZodis(n) : "Šiandien!"));
+      korta.addEventListener("click", function () {
+        portretas.classList.remove("soka");
+        void portretas.offsetWidth;
+        portretas.classList.add("soka");
+      });
+      portretas.addEventListener("animationend", function (e) {
+        if (e.target === portretas) portretas.classList.remove("soka");
+      });
+      kiemoSarasas.appendChild(korta);
+    });
+    tusciasKiemas.hidden = laukiantys.length > 0;
+
+    neuzimti.forEach(function (vardas) {
+      const m = document.createElement("button");
+      m.type = "button";
+      m.className = "laisvas";
+      const v = document.createElement("span"); v.textContent = VARDAI[vardas];
+      const pr = document.createElement("span"); pr.className = "prideti"; pr.textContent = "+ diena";
+      m.append(sukurkPortreta(vardas), v, pr);
+      m.setAttribute("aria-label", "Priskirti dieną: " + VARDAI[vardas]);
+      m.addEventListener("click", function () { kiemas.hidden = true; atidaryk(vardas); });
+      laisvi.appendChild(m);
+    });
+    laisvuZingsnis.hidden = neuzimti.length === 0;
+  }
+
+  function atidarykKiema() {
+    pieskKiema();
+    kiemas.hidden = false;
+    if (patarimas) patarimas.classList.add("dingsta");
+  }
+  function uzdarykKiema() {
+    kiemas.hidden = true;
+    iKiema.focus();
+  }
+
+  iKiema.addEventListener("click", atidarykKiema);
+  document.getElementById("kiemas-uzdaryti").addEventListener("click", uzdarykKiema);
+  document.getElementById("kiemas-priskirti").addEventListener("click", function () { kiemas.hidden = true; atidaryk(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !kiemas.hidden) uzdarykKiema();
+  });
+
+  // Kas minutę (ir grįžus į programėlę) dienos persiskaičiuoja
+  function atnaujinkViska() {
+    Object.values(padareliai).forEach(atnaujinkZenkliuka);
+    if (!kiemas.hidden) pieskKiema();
+  }
+  setInterval(atnaujinkViska, 60000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) atnaujinkViska(); });
+
+  atidaryti.addEventListener("click", atidaryk);
+  document.getElementById("uzdaryti").addEventListener("click", uzdaryk);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !skydelis.hidden) uzdaryk();
+  });
+})();
+</script>
+
+</body>
+</html>
